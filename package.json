@@ -1,0 +1,19 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "Learning NodeJS advanced",
+  "main": "day1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revenue-practice/node-js.git"
+  },
+  "author": "\"Developer Riyansh\"",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/revenue-practice/node-js/issues"
+  },
+  "homepage": "https://github.com/revenue-practice/node-js#readme"
+}
