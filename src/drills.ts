@@ -33,6 +33,48 @@ export function unique(nums: number[]): number[] {
     return result;
 };
 
+export function flatten<T>(arr: T[][]): T[] {
+    return Object.values(arr.flat());
+};
+
+export function chunk<T>(arr: (T[] | T)[], size: number): T[][] {
+    if(!size) throw new Error('Chunk size cannot be zero');
+
+    let chunk = size, result: T[][] = [], tempValues: T[] = [];
+    for(let index = 0; index < arr.length; index += 1) {
+        if(Array.isArray(arr[index])) {
+            const element: T[] = arr[index] as T[];
+            for(let curr = 0; curr < element.length; curr += 1) {
+                if(chunk) {
+                    tempValues.push(element[curr]);
+                    chunk -= 1;
+                }
+                if(!chunk) {
+                    chunk = size;
+                    result.push(tempValues);
+                    tempValues = [];
+                }
+            }
+        }
+        else {
+            const element = arr[index] as T;
+            if(chunk) {
+                tempValues.push(element);
+                chunk -= 1;
+            }
+            if(!chunk) {
+                chunk = size;
+                result.push(tempValues);
+                tempValues = [];
+            }
+        }        
+    }
+
+    if(!chunk) result.push(tempValues);
+
+    return result;
+};
+
 export function isPalindrome(s: string): boolean {
     s = s.trim();
     let start = 0, end = s.length - 1;
@@ -64,4 +106,18 @@ export function reverseWords(s: string): string {
     return reveresedString;
 }
 
-export function titleCase(s: string): string { throw new Error("TODO"); }
+export function titleCase(s: string): string { 
+    const words = s.split(/\s+/);
+    let result = "";
+    for(let index = 0; index < words.length; index += 1) {
+        let curr = words[index]; 
+        curr = curr.trim();
+        curr = curr.toLowerCase();
+        curr = curr.charAt(0).toUpperCase() + curr.slice(1);
+
+        result += curr; result += " ";
+    }
+    result = result.trim();
+
+    return result;
+}
