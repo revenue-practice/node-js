@@ -75,6 +75,22 @@ export function chunk<T>(arr: (T[] | T)[], size: number): T[][] {
     return result;
 };
 
+export function groupBy<T>(arr: T[], keyFn: (x: T) => string): Record<string, T[]> {
+    const result: Record<string, T[]> = {};
+    for(const value of arr) {
+        const key: string = keyFn(value);
+        if(result.hasOwnProperty(key)) {
+            result[key].push(value);
+        }
+        else {
+            result[key] = [];
+            result[key].push(value);
+        }
+    }
+
+    return result;
+};
+
 export function isPalindrome(s: string): boolean {
     s = s.trim();
     let start = 0, end = s.length - 1;
@@ -87,12 +103,6 @@ export function isPalindrome(s: string): boolean {
 
     return true;
 };
-
-const reverse = (s: string): string => {
-    let newS = "";
-    for(let index = s.length - 1; index >= 0; index -= 1) newS += s[index];
-    return newS;
-}
 
 export function reverseWords(s: string): string { 
     const words = s.split(/\s+/);

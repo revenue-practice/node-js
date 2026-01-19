@@ -20,9 +20,6 @@ importers:
       prettier:
         specifier: ^3.8.0
         version: 3.8.0
-      tsc:
-        specifier: ^2.0.4
-        version: 2.0.4
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -996,10 +993,6 @@ packages:
   toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
-
-  tsc@2.0.4:
-    resolution: {integrity: sha512-fzoSieZI5KKJVBYGvwbVZs/J5za84f2lSTLPYf6AGiIf43tZ3GNrI1QzTLcjtyDDP4aLxd46RTZq1nQxe7+k5Q==}
-    hasBin: true
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -2030,8 +2023,6 @@ snapshots:
   tinyrainbow@3.0.3: {}
 
   toidentifier@1.0.1: {}
-
-  tsc@2.0.4: {}
 
   type-check@0.4.0:
     dependencies:

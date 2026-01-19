@@ -1,3 +1,5 @@
+import "./drills";
+
 const express = require('express');
 const app = express();
 

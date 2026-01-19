@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk } from "../src/drills";
+import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy } from "../src/drills";
 
 test('Verify integer addition', () => {
     expect(add(1, 2)).toBe(3);
@@ -44,13 +44,28 @@ test('Verify unique elements', () => {
 test('Flatten array', () => {
     expect(flatten<number>([[1, 2], [3, 4]])).toEqual([1, 2, 3, 4]);
     expect(flatten<number>([[1, 2], [3, 4], [4, 5, 6]])).toEqual([1, 2, 3, 4, 4, 5, 6]);
-    expect(flatten([["a"],["b","c"]])).toEqual(["a", "b", "c"]);
+    expect(flatten([["a"], ["b", "c"]])).toEqual(["a", "b", "c"]);
 });
 
 test('Dividing array into chunks', () => {
     expect(chunk<number>([[1, 2, 3], 4, 5], 2)).toEqual([[1, 2], [3, 4]]);
     expect(chunk<string>([["1", "2", "3"], "4", "5"], 3)).toEqual([["1", "2", "3"]]);
-    expect(chunk<string>(["1"], 0)).toThrow();
+    expect(() => chunk<string>(["1"], 0)).toThrowError();
+});
+
+test('Generic group by', () => {
+    const people = [
+        { name: "A", city: "Delhi" },
+        { name: "B", city: "Mumbai" },
+        { name: "C", city: "Delhi" },
+    ];
+
+    expect(groupBy(people, p => p.city)).toEqual(
+        { 
+            "Delhi": [{ city: "Delhi", name: "A" }, { city: "Delhi", name: "C" }],
+            "Mumbai": [{ city: "Mumbai", name: "B" }]
+        },
+    );
 });
 
 test('Verify pallindromic string', () => {
