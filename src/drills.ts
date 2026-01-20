@@ -91,6 +91,41 @@ export function groupBy<T>(arr: T[], keyFn: (x: T) => string): Record<string, T[
     return result;
 };
 
+export function countBy<T>(arr: T[], keyFn: (x: T) => number): Record<string, number> {
+    const result: Record<string, number> = {};
+    for(const value of arr) {
+        const key = String(keyFn(value));
+        if(result.hasOwnProperty(key)) {
+            result[key] = result[key] + 1;
+        }
+        else {
+            result[key] = 1;
+        }
+    }
+    return result;
+}
+
+export function pick<T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+    const result: Partial<Pick<T, K>> = {};
+
+    for(const key of keys) {
+        if(key in obj) result[key] = obj[key];
+    }
+
+    return result as Pick<T, K>;
+};
+
+export function omit<T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Omit<T, K> {
+    const result: Partial<T> = {};
+    const keySet = new Set<PropertyKey>(keys as readonly PropertyKey[]);
+
+    for(const [key] of Object.entries(obj)) {
+        if(!keySet.has(key)) result[key] = obj[key];
+    }
+
+    return result as Omit<T, K>;
+}
+
 export function isPalindrome(s: string): boolean {
     s = s.trim();
     let start = 0, end = s.length - 1;

@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy } from "../src/drills";
+import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy, countBy, pick, omit } from "../src/drills";
 
 test('Verify integer addition', () => {
     expect(add(1, 2)).toBe(3);
@@ -61,11 +61,39 @@ test('Generic group by', () => {
     ];
 
     expect(groupBy(people, p => p.city)).toEqual(
-        { 
+        {
             "Delhi": [{ city: "Delhi", name: "A" }, { city: "Delhi", name: "C" }],
             "Mumbai": [{ city: "Mumbai", name: "B" }]
         },
     );
+});
+
+test('Count group by', () => {
+    const keyStrings: string[] = ["aa", "aa", "aa", "b", "c", "d"];
+    expect(countBy(keyStrings, s => s.length)).toEqual({
+        "1": 3,
+        "2": 3
+    });
+});
+
+test('Pick selective objects', () => {
+    const keyStrings = {
+        a: 1,
+        b: 2
+    };
+    expect(pick(keyStrings, ["a"])).toEqual({ a: 1 });
+    expect(pick(keyStrings, ["a", "b"])).toEqual(keyStrings);
+    expect(pick(keyStrings, [])).toEqual({});
+});
+
+test('Omit selective objects', () => {
+    const keyStrings = {
+        a: 1,
+        b: 2
+    };
+    expect(omit(keyStrings, ["a"])).toEqual({ b: 2 });
+    expect(omit(keyStrings, ["a", "b"])).toEqual({});
+    expect(omit(keyStrings, [])).toEqual(keyStrings);
 });
 
 test('Verify pallindromic string', () => {
