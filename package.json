@@ -4,20 +4,22 @@
     "description": "NodeJS learnings",
     "main": "index.js",
     "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js",
         "test": "vitest",
-        "test: run": "vitest run",
+        "test:run": "vitest run",
         "lint": "eslint .",
         "format": "prettier . --write"
     },
     "keywords": [],
-    "author": "",
+    "author": "Developer Riyansh",
     "license": "ISC",
     "packageManager": "pnpm@10.28.0",
     "devDependencies": {
         "@types/node": "^25.0.8",
         "eslint": "^9.39.2",
+        "express": "^5.2.1",
         "prettier": "^3.8.0",
-        "tsc": "^2.0.4",
         "typescript": "^5.9.3",
         "vitest": "^4.0.17"
     }

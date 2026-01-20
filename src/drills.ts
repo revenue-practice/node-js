@@ -33,6 +33,99 @@ export function unique(nums: number[]): number[] {
     return result;
 };
 
+export function flatten<T>(arr: T[][]): T[] {
+    return Object.values(arr.flat());
+};
+
+export function chunk<T>(arr: (T[] | T)[], size: number): T[][] {
+    if(!size) throw new Error('Chunk size cannot be zero');
+
+    let chunk = size, result: T[][] = [], tempValues: T[] = [];
+    for(let index = 0; index < arr.length; index += 1) {
+        if(Array.isArray(arr[index])) {
+            const element: T[] = arr[index] as T[];
+            for(let curr = 0; curr < element.length; curr += 1) {
+                if(chunk) {
+                    tempValues.push(element[curr]);
+                    chunk -= 1;
+                }
+                if(!chunk) {
+                    chunk = size;
+                    result.push(tempValues);
+                    tempValues = [];
+                }
+            }
+        }
+        else {
+            const element = arr[index] as T;
+            if(chunk) {
+                tempValues.push(element);
+                chunk -= 1;
+            }
+            if(!chunk) {
+                chunk = size;
+                result.push(tempValues);
+                tempValues = [];
+            }
+        }        
+    }
+
+    if(!chunk) result.push(tempValues);
+
+    return result;
+};
+
+export function groupBy<T>(arr: T[], keyFn: (x: T) => string): Record<string, T[]> {
+    const result: Record<string, T[]> = {};
+    for(const value of arr) {
+        const key: string = keyFn(value);
+        if(result.hasOwnProperty(key)) {
+            result[key].push(value);
+        }
+        else {
+            result[key] = [];
+            result[key].push(value);
+        }
+    }
+
+    return result;
+};
+
+export function countBy<T>(arr: T[], keyFn: (x: T) => number): Record<string, number> {
+    const result: Record<string, number> = {};
+    for(const value of arr) {
+        const key = String(keyFn(value));
+        if(result.hasOwnProperty(key)) {
+            result[key] = result[key] + 1;
+        }
+        else {
+            result[key] = 1;
+        }
+    }
+    return result;
+}
+
+export function pick<T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+    const result: Partial<Pick<T, K>> = {};
+
+    for(const key of keys) {
+        if(key in obj) result[key] = obj[key];
+    }
+
+    return result as Pick<T, K>;
+};
+
+export function omit<T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Omit<T, K> {
+    const result: Partial<T> = {};
+    const keySet = new Set<PropertyKey>(keys as readonly PropertyKey[]);
+
+    for(const [key] of Object.entries(obj)) {
+        if(!keySet.has(key)) result[key] = obj[key];
+    }
+
+    return result as Omit<T, K>;
+}
+
 export function isPalindrome(s: string): boolean {
     s = s.trim();
     let start = 0, end = s.length - 1;
@@ -46,12 +139,6 @@ export function isPalindrome(s: string): boolean {
     return true;
 };
 
-const reverse = (s: string): string => {
-    let newS = "";
-    for(let index = s.length - 1; index >= 0; index -= 1) newS += s[index];
-    return newS;
-}
-
 export function reverseWords(s: string): string { 
     const words = s.split(/\s+/);
     let reveresedString = "";
@@ -64,4 +151,18 @@ export function reverseWords(s: string): string {
     return reveresedString;
 }
 
-export function titleCase(s: string): string { throw new Error("TODO"); }
+export function titleCase(s: string): string { 
+    const words = s.split(/\s+/);
+    let result = "";
+    for(let index = 0; index < words.length; index += 1) {
+        let curr = words[index]; 
+        curr = curr.trim();
+        curr = curr.toLowerCase();
+        curr = curr.charAt(0).toUpperCase() + curr.slice(1);
+
+        result += curr; result += " ";
+    }
+    result = result.trim();
+
+    return result;
+}
