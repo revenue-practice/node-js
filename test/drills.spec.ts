@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy, countBy, pick, omit, deepClone } from "../src/drills";
+import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy, countBy, pick, omit, deepClone, safeJsonParse } from "../src/drills";
 
 test('Verify integer addition', () => {
     expect(add(1, 2)).toBe(3);
@@ -167,4 +167,12 @@ test('Verify reveresed string', () => {
 test('Verify title Strings', () => {
     expect(titleCase("heLLo woRLD")).toBe("Hello World");
     expect(titleCase(" HELLO TIMMY  ")).toBe("Hello Timmy");
+});
+
+test('Parse json safely', () => {
+    const person = '{"name":"Ankit","age":23,"city":"Ranchi"}';
+    const falsePerson = '{"name":"Ankit","age":23,"city":Ranchi}';
+
+    expect(safeJsonParse(person)).toEqual({ ok: true, value: person });
+    expect(safeJsonParse(falsePerson)).toEqual({ ok: true, value: person });
 });

@@ -1,3 +1,5 @@
+import { safeJsonParseResult } from "./types";
+
 export function add(a: number, b: number): number {
     return a + b;
 };
@@ -171,8 +173,17 @@ export function titleCase(s: string): string {
     return result;
 }
 
-export function safeJsonParse(s: string): { ok: true, value: string } | { ok: false, error: string } {
-    
+export function safeJsonParse(s: string): safeJsonParseResult {
+    let result: safeJsonParseResult = { ok: true, value: s };
+    try {
+        if(JSON.parse(s)) { }
+    }
+    catch (error) {
+        result = {
+            ok: false,
+            error: error.message
+        };
+    }
 
-    return { ok: true, value: "" };
+    return result;
 }
