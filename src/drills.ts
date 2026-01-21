@@ -126,6 +126,10 @@ export function omit<T extends object, K extends keyof T>(obj: T, keys: readonly
     return result as Omit<T, K>;
 }
 
+export function deepClone<T>(value: T): T {
+    return JSON.parse(JSON.stringify(value));
+};
+
 export function isPalindrome(s: string): boolean {
     s = s.trim();
     let start = 0, end = s.length - 1;
@@ -165,4 +169,10 @@ export function titleCase(s: string): string {
     result = result.trim();
 
     return result;
+}
+
+export function safeJsonParse(s: string): { ok: true, value: string } | { ok: false, error: string } {
+    
+
+    return { ok: true, value: "" };
 }

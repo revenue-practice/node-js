@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy, countBy, pick, omit } from "../src/drills";
+import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy, countBy, pick, omit, deepClone } from "../src/drills";
 
 test('Verify integer addition', () => {
     expect(add(1, 2)).toBe(3);
@@ -94,6 +94,61 @@ test('Omit selective objects', () => {
     expect(omit(keyStrings, ["a"])).toEqual({ b: 2 });
     expect(omit(keyStrings, ["a", "b"])).toEqual({});
     expect(omit(keyStrings, [])).toEqual(keyStrings);
+});
+
+test('Deep clone of the object', () => {
+    const obj: any = {
+        x: {
+            y: 1, 
+            z: 2
+        },
+        a: {
+            b: {
+                c: {
+                    d: 3,
+                    e: 4
+                },
+                f: 5,
+                g: 6
+            },
+            h: 7,
+            i: 8
+        }
+    };
+    const cloneObj = deepClone(obj);
+    cloneObj.x = 1; cloneObj.a = {
+        b: {
+            c: 3,
+            f: 4
+        }
+    };
+
+    const arr = [ [1, [2, [3, 4], 5], 6], 7 ];
+    const cloneArr = deepClone(arr);
+    cloneArr[1] = 8;
+
+    expect(obj).toStrictEqual({
+        x: {
+            y: 1, 
+            z: 2
+        },
+        a: {
+            b: {
+                c: {
+                    d: 3,
+                    e: 4
+                },
+                f: 5,
+                g: 6
+            },
+            h: 7,
+            i: 8
+        }
+    });
+    expect(cloneObj).not.toEqual(obj);
+    
+    expect(arr).toStrictEqual([ [1, [2, [3, 4], 5], 6], 7 ] );
+    expect(cloneArr).not.toEqual(arr);
 });
 
 test('Verify pallindromic string', () => {
