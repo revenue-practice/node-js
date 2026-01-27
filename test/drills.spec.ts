@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy, countBy, pick, omit } from "../src/drills";
+import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy, countBy, pick, omit, deepClone, safeJsonParse } from "../src/drills";
 
 test('Verify integer addition', () => {
     expect(add(1, 2)).toBe(3);
@@ -27,13 +27,13 @@ test('Verify sum of array', () => {
 test('Verify average of array', () => {
     expect(avg([1, 2, 3, 4, 5])).toBe(3);
     expect(avg([0])).toBe(0);
-    expect(avg([])).toBe(0);
+    expect(() => avg([])).toThrowError();
 });
 
 test('Verify maximum of array', () => {
     expect(max([1, 2, 6, 4, 5])).toBe(6);
     expect(max([0])).toBe(0);
-    expect(max([])).toBe(0);
+    expect(() => max([])).toThrowError();
 });
 
 test('Verify unique elements', () => {
@@ -48,8 +48,9 @@ test('Flatten array', () => {
 });
 
 test('Dividing array into chunks', () => {
-    expect(chunk<number>([[1, 2, 3], 4, 5], 2)).toEqual([[1, 2], [3, 4]]);
-    expect(chunk<string>([["1", "2", "3"], "4", "5"], 3)).toEqual([["1", "2", "3"]]);
+    expect(chunk<number>([1, 2, 3, 2], 2)).toEqual([[1, 2], [3, 2]]);
+    expect(chunk<number>([1, 2, 3, 4, 5], 3)).toEqual([[1, 2, 3], [4, 5]]);
+    expect(chunk<string>(["1", "2", "3", "4", "5"], 3)).toEqual([["1", "2", "3"], ["4", "5"]]);
     expect(() => chunk<string>(["1"], 0)).toThrowError();
 });
 
@@ -96,6 +97,61 @@ test('Omit selective objects', () => {
     expect(omit(keyStrings, [])).toEqual(keyStrings);
 });
 
+test('Deep clone of the object', () => {
+    const obj: any = {
+        x: {
+            y: 1, 
+            z: 2
+        },
+        a: {
+            b: {
+                c: {
+                    d: 3,
+                    e: 4
+                },
+                f: 5,
+                g: 6
+            },
+            h: 7,
+            i: 8
+        }
+    };
+    const cloneObj = deepClone(obj);
+    cloneObj.x = 1; cloneObj.a = {
+        b: {
+            c: 3,
+            f: 4
+        }
+    };
+
+    const arr = [ [1, [2, [3, 4], 5], 6], 7 ];
+    const cloneArr = deepClone(arr);
+    cloneArr[1] = 8;
+
+    expect(obj).toStrictEqual({
+        x: {
+            y: 1, 
+            z: 2
+        },
+        a: {
+            b: {
+                c: {
+                    d: 3,
+                    e: 4
+                },
+                f: 5,
+                g: 6
+            },
+            h: 7,
+            i: 8
+        }
+    });
+    expect(cloneObj).not.toEqual(obj);
+    
+    expect(arr).toStrictEqual([ [1, [2, [3, 4], 5], 6], 7 ] );
+    expect(cloneArr).not.toEqual(arr);
+});
+
 test('Verify pallindromic string', () => {
     expect(isPalindrome("aba")).toBe(true);
     expect(isPalindrome("abc")).toBe(false);
@@ -112,4 +168,12 @@ test('Verify reveresed string', () => {
 test('Verify title Strings', () => {
     expect(titleCase("heLLo woRLD")).toBe("Hello World");
     expect(titleCase(" HELLO TIMMY  ")).toBe("Hello Timmy");
+});
+
+test('Parse json safely', () => {
+    const person = '{"name":"Ankit","age":23,"city":"Ranchi"}';
+    const falsePerson = '{"name":"Ankit","age":23,"city":Ranchi}';
+
+    expect(safeJsonParse(person)).toEqual({ ok: true, value: person });
+    expect(safeJsonParse(falsePerson)).toEqual({ ok: false, error: "Unexpected token R in JSON at position 32" });
 });
