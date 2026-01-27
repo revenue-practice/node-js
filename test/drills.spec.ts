@@ -27,13 +27,13 @@ test('Verify sum of array', () => {
 test('Verify average of array', () => {
     expect(avg([1, 2, 3, 4, 5])).toBe(3);
     expect(avg([0])).toBe(0);
-    expect(avg([])).toBe(0);
+    expect(() => avg([])).toThrowError();
 });
 
 test('Verify maximum of array', () => {
     expect(max([1, 2, 6, 4, 5])).toBe(6);
     expect(max([0])).toBe(0);
-    expect(max([])).toBe(0);
+    expect(() => max([])).toThrowError();
 });
 
 test('Verify unique elements', () => {
@@ -48,8 +48,9 @@ test('Flatten array', () => {
 });
 
 test('Dividing array into chunks', () => {
-    expect(chunk<number>([[1, 2, 3], 4, 5], 2)).toEqual([[1, 2], [3, 4]]);
-    expect(chunk<string>([["1", "2", "3"], "4", "5"], 3)).toEqual([["1", "2", "3"]]);
+    expect(chunk<number>([1, 2, 3, 2], 2)).toEqual([[1, 2], [3, 2]]);
+    expect(chunk<number>([1, 2, 3, 4, 5], 3)).toEqual([[1, 2, 3], [4, 5]]);
+    expect(chunk<string>(["1", "2", "3", "4", "5"], 3)).toEqual([["1", "2", "3"], ["4", "5"]]);
     expect(() => chunk<string>(["1"], 0)).toThrowError();
 });
 
@@ -174,5 +175,5 @@ test('Parse json safely', () => {
     const falsePerson = '{"name":"Ankit","age":23,"city":Ranchi}';
 
     expect(safeJsonParse(person)).toEqual({ ok: true, value: person });
-    expect(safeJsonParse(falsePerson)).toEqual({ ok: true, value: person });
+    expect(safeJsonParse(falsePerson)).toEqual({ ok: false, error: "Unexpected token R in JSON at position 32" });
 });
