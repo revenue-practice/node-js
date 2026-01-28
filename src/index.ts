@@ -1,4 +1,5 @@
 import "./drills";
+import "./week1/drills";
 
 const express = require('express');
 const app = express();
