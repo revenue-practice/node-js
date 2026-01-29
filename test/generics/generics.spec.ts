@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy, countBy, pick, omit } from "../src/drills";
+import { add, isEven, clamp, sum, avg, max, unique, isPalindrome, reverseWords, titleCase, flatten, chunk, groupBy, countBy, pick, omit } from "../../src/generics/generics";
 
 test('Verify integer addition', () => {
     expect(add(1, 2)).toBe(3);

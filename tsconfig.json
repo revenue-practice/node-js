@@ -11,6 +11,6 @@
         "alwaysStrict": true,
         "strictNullChecks": true
     },
-    "include": ["./src/**/*"],
+    "include": ["./src/**/*", "test/week1/day1/arrays.test.spec.ts", "test/week1/day1/json.test.spec.ts", "test/week1/day1/numbers.test.spec.ts", "test/week1/day1/strings.test.spec.ts"],
     "exclude": ["./node_modules", "**/*.spec.ts"]
 }

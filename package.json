@@ -9,7 +9,8 @@
         "test": "vitest",
         "test:run": "vitest run",
         "lint": "eslint .",
-        "format": "prettier . --write"
+        "format": "prettier . --write",
+        "typecheck": "tsc -p . --noEmit"
     },
     "keywords": [],
     "author": "Developer Riyansh",
