@@ -1,5 +1,5 @@
-import "./drills";
-import "./week1/drills";
+import "./generics/generics";
+import "./week1/day1/drills";
 
 const express = require('express');
 const app = express();
