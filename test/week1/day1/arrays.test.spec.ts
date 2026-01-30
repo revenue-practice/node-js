@@ -34,7 +34,7 @@ test("Flatten array", () => {
             [1, 2],
             [3, 4],
         ]),
-    ).toEqual([1, 2, 3, 4]);
-    expect(flatten([[1], [2, 3], []])).toEqual([1, 2, 3]);
-    expect(flatten<string>([["a"], ["b", "c"]])).toEqual(["a", "b", "c"]);
+    ).to.deep.equal([1, 2, 3, 4]);
+    expect(flatten([[1], [2, 3], []])).to.deep.equal([1, 2, 3]);
+    expect(flatten<string>([["a"], ["b", "c"]])).to.deep.equal(["a", "b", "c"]);
 });

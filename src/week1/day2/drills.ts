@@ -1,5 +1,3 @@
-import { isEitherUndefinedOrNull } from "../../utils/helper";
-
 export function parseIntStrict(s: string): number {
     s = s.trim();
     if (s.length) {
@@ -9,31 +7,31 @@ export function parseIntStrict(s: string): number {
             isNegative = true;
         }
 
+        if (!s.length) throw new Error("invalid integer");
+
         for (const val of s) {
-            if (!(val >= "0" && val <= "9"))
-                throw new Error("Must be a valid integer");
+            if (!(val >= "0" && val <= "9")) throw new Error("invalid integer");
         }
 
-        const value: number = parseInt(s);
-        if (value !== value) throw new Error("Invalid integer");
+        const value: number = Number(s);
+        if (Number.isNaN(value)) throw new Error("invalid integer");
 
         return isNegative ? value * -1 : value;
     }
-    throw new Error("Not a numeric string");
+    throw new Error("invalid integer");
 }
 
 export function pickFields(
     obj: unknown,
     keys: string[],
 ): Record<string, unknown> {
-    if (Array.isArray(obj) || !(obj instanceof Object))
-        throw new Error("obj must be an object");
+    if (!(typeof obj === 'object' && !Array.isArray(obj) && obj !== null))
+        throw new Error("expected object");
 
+    const record: Record<string, unknown> =  (obj as Record<string, unknown>);
     const result: Record<string, unknown> = Object.create(null);
     for (const key of keys) {
-        const value: unknown = (obj as Record<string, unknown>)[key];
-        if (isEitherUndefinedOrNull(value)) continue;
-        result[key] = value;
+        if (Object.hasOwn(obj, key)) result[key] = record[key];
     }
 
     return result;

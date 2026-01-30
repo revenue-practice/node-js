@@ -54,8 +54,8 @@ test("Verify maximum of array", () => {
 });
 
 test("Verify unique elements", () => {
-    expect(unique([1, 2, 2, 3])).toEqual([1, 2, 3]);
-    expect(unique([4, 5, 6])).toEqual([4, 5, 6]);
+    expect(unique([1, 2, 2, 3])).to.deep.equal([1, 2, 3]);
+    expect(unique([4, 5, 6])).to.deep.equal([4, 5, 6]);
 });
 
 test("Flatten array", () => {
@@ -64,23 +64,23 @@ test("Flatten array", () => {
             [1, 2],
             [3, 4],
         ]),
-    ).toEqual([1, 2, 3, 4]);
+    ).to.deep.equal([1, 2, 3, 4]);
     expect(
         flatten<number>([
             [1, 2],
             [3, 4],
             [4, 5, 6],
         ]),
-    ).toEqual([1, 2, 3, 4, 4, 5, 6]);
-    expect(flatten([["a"], ["b", "c"]])).toEqual(["a", "b", "c"]);
+    ).to.deep.equal([1, 2, 3, 4, 4, 5, 6]);
+    expect(flatten([["a"], ["b", "c"]])).to.deep.equal(["a", "b", "c"]);
 });
 
 test("Dividing array into chunks", () => {
-    expect(chunk<number>([[1, 2, 3], 4, 5], 2)).toEqual([
+    expect(chunk<number>([[1, 2, 3], 4, 5], 2)).to.deep.equal([
         [1, 2],
         [3, 4],
     ]);
-    expect(chunk<string>([["1", "2", "3"], "4", "5"], 3)).toEqual([
+    expect(chunk<string>([["1", "2", "3"], "4", "5"], 3)).to.deep.equal([
         ["1", "2", "3"],
     ]);
     expect(() => chunk<string>(["1"], 0)).toThrowError();
@@ -93,7 +93,7 @@ test("Generic group by", () => {
         { name: "C", city: "Delhi" },
     ];
 
-    expect(groupBy(people, (p) => p.city)).toEqual({
+    expect(groupBy(people, (p) => p.city)).to.deep.equal({
         Delhi: [
             { city: "Delhi", name: "A" },
             { city: "Delhi", name: "C" },
@@ -104,7 +104,7 @@ test("Generic group by", () => {
 
 test("Count group by", () => {
     const keyStrings: string[] = ["aa", "aa", "aa", "b", "c", "d"];
-    expect(countBy(keyStrings, (s) => s.length)).toEqual({
+    expect(countBy(keyStrings, (s) => s.length)).to.deep.equal({
         "1": 3,
         "2": 3,
     });
@@ -115,9 +115,9 @@ test("Pick selective objects", () => {
         a: 1,
         b: 2,
     };
-    expect(pick(keyStrings, ["a"])).toEqual({ a: 1 });
-    expect(pick(keyStrings, ["a", "b"])).toEqual(keyStrings);
-    expect(pick(keyStrings, [])).toEqual({});
+    expect(pick(keyStrings, ["a"])).to.deep.equal({ a: 1 });
+    expect(pick(keyStrings, ["a", "b"])).to.deep.equal(keyStrings);
+    expect(pick(keyStrings, [])).to.deep.equal({});
 });
 
 test("Omit selective objects", () => {
@@ -125,9 +125,9 @@ test("Omit selective objects", () => {
         a: 1,
         b: 2,
     };
-    expect(omit(keyStrings, ["a"])).toEqual({ b: 2 });
-    expect(omit(keyStrings, ["a", "b"])).toEqual({});
-    expect(omit(keyStrings, [])).toEqual(keyStrings);
+    expect(omit(keyStrings, ["a"])).to.deep.equal({ b: 2 });
+    expect(omit(keyStrings, ["a", "b"])).to.deep.equal({});
+    expect(omit(keyStrings, [])).to.deep.equal(keyStrings);
 });
 
 test("Verify pallindromic string", () => {
