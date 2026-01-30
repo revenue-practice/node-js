@@ -1,16 +1,18 @@
 {
     "compilerOptions": {
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
         "outDir": "./dist",
         "rootDir": "./src",
         "allowJs": true,
         "checkJs": false,
         "esModuleInterop": true,
         "module": "NodeNext",
-        "target": "es2017",
+        "target": "ES2022",
         "sourceMap": true,
         "alwaysStrict": true,
         "strictNullChecks": true
     },
-    "include": ["./src/**/*", "test/week1/day1/arrays.test.spec.ts", "test/week1/day1/json.test.spec.ts", "test/week1/day1/numbers.test.spec.ts", "test/week1/day1/strings.test.spec.ts"],
-    "exclude": ["./node_modules", "**/*.spec.ts"]
+    "include": ["./src/**/*"],
+    "exclude": ["./node_modules", "**/*.spec.ts", "**/**/*.test.spec.ts"]
 }
