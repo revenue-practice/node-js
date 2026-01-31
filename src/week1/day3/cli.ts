@@ -1,5 +1,6 @@
 import { isEitherUndefinedOrNull } from "../../utils/helper";
-import * as fs from "fs";
+import { promises as fs } from 'node:fs';
+import path from "node:path";
 import { githubReport } from "./githubReport";
 import { GithubReport } from "../../utils/types";
 
@@ -16,22 +17,10 @@ async function initiateCli(): Promise<GithubReport> {
 
         console.log("Final res", response);
 
-        const outputFilePath = `data/${username}.json`;
-        fs.appendFile(
-            outputFilePath,
-            JSON.stringify(response) + "\n",
-            "utf8",
-            (error) => {
-                if (error) {
-                    const message: string =
-                        error instanceof Error
-                            ? error.message
-                            : JSON.stringify(error);
-                    throw new Error(message);
-                }
-                console.log(`Data written to ${outputFilePath} as JSON.`);
-            },
-        );
+        const folderPath: string | undefined = await fs.mkdir('data/', { recursive: true });
+        const outputFilePath = path.join(folderPath!, `${username}.json`);
+
+        await fs.writeFile(outputFilePath, JSON.stringify(response, null, 2), 'utf-8');
 
         return response;
     } catch (error) {

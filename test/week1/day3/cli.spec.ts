@@ -1,6 +1,5 @@
 import { spawnSync } from "child_process";
-import axios from "axios";
-import { expect, test, vi, afterEach, MockedFunction } from "vitest";
+import { expect, test, vi, afterEach } from "vitest";
 import {
     fetchUserProfile,
     fetchUserRepos,
@@ -15,20 +14,15 @@ import {
     mockGithubReportResponse,
 } from "./mock-data";
 import {
-    AXIOS_GITHUB_HEADER,
-    AXIOS_METHOD_GET,
+    HTTP_GITHUB_HEADER,
+    HTTP_METHOD_GET,
     BASE_URL,
 } from "../../../src/utils/constants";
-
-vi.mock("axios", () => ({
-    default: vi.fn(),
-}));
-
-const mockedAxios = axios as unknown as MockedFunction<typeof axios>;
 
 afterEach(() => {
     vi.clearAllMocks(); // Clears call history
     vi.resetAllMocks(); // Resets both call history and implementation
+    vi.unstubAllGlobals(); // remove global stubs like fetch
     vi.restoreAllMocks(); // Restores original implementation if mocked
 });
 
@@ -47,40 +41,65 @@ test("Validate input in cli", () => {
 });
 
 test("Fetch user profile", async () => {
-    mockedAxios.mockResolvedValue(mockRawUserProfileResponse);
+    const mockedResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue(mockRawUserProfileResponse.data),
+    };
+    const mockedFetch = vi.fn().mockResolvedValue(mockedResponse);
+    vi.stubGlobal("fetch", mockedFetch);
 
     const fetchUserProfileResponse = await fetchUserProfile(mockUsername);
     expect(fetchUserProfileResponse).toEqual(mockUserProfileResponse);
-    expect(mockedAxios).toHaveBeenCalledTimes(1);
-    expect(mockedAxios).toHaveBeenCalledWith({
-        method: `${AXIOS_METHOD_GET}`,
-        url: `${BASE_URL}/${mockUsername}`,
-        headers: AXIOS_GITHUB_HEADER,
+    expect(mockedFetch).toHaveBeenCalledTimes(1);
+    expect(mockedFetch).toHaveBeenCalledWith(`${BASE_URL}/${mockUsername}`, {
+        method: `${HTTP_METHOD_GET}`,
+        headers: HTTP_GITHUB_HEADER,
     });
 });
 
 test("Fetch user repository", async () => {
-    mockedAxios.mockResolvedValue(mockRawFetchUserReposResponse);
+    const mockedResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue(mockRawFetchUserReposResponse.data),
+    };
+    const mockedFetch = vi.fn().mockResolvedValue(mockedResponse);
+    vi.stubGlobal("fetch", mockedFetch);
 
     const fetchUserReposResponse = await fetchUserRepos(mockUsername);
     expect(fetchUserReposResponse).toEqual(mockFetchUserReposResponse);
-    expect(mockedAxios).toHaveBeenCalledTimes(1);
-    expect(mockedAxios).toHaveBeenCalledWith({
-        method: `${AXIOS_METHOD_GET}`,
-        url: `${BASE_URL}/${mockUsername}/repos?per_page=100`,
-        headers: AXIOS_GITHUB_HEADER,
-    });
+    expect(mockedFetch).toHaveBeenCalledTimes(1);
+    expect(mockedFetch).toHaveBeenCalledWith(
+        `${BASE_URL}/${mockUsername}/repos?per_page=100`,
+        {
+            method: `${HTTP_METHOD_GET}`,
+            headers: HTTP_GITHUB_HEADER,
+        },
+    );
 });
 
 test("Github Report", async () => {
-    mockedAxios
-        .mockResolvedValueOnce(mockRawUserProfileResponse)
-        .mockResolvedValueOnce(mockRawFetchUserReposResponse);
+    vi.stubGlobal(
+        "fetch",
+        vi
+            .fn()
+            .mockResolvedValueOnce({
+                ok: true,
+                json: vi
+                    .fn()
+                    .mockResolvedValue(mockRawUserProfileResponse.data),
+            })
+            .mockResolvedValueOnce({
+                ok: true,
+                json: vi
+                    .fn()
+                    .mockResolvedValue(mockRawFetchUserReposResponse.data),
+            }),
+    );
 
-    const githubReportResponse = await githubReport(mockUsername);
     const alterGeneratedAt = {
         ...mockGithubReportResponse,
         generatedAt: new Date().toISOString(),
     };
+    const githubReportResponse = await githubReport(mockUsername);
     expect(githubReportResponse).toEqual(alterGeneratedAt);
 });

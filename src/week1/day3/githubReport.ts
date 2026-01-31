@@ -1,28 +1,24 @@
-import axios from "axios";
 import {
-    AXIOS_GITHUB_HEADER,
-    AXIOS_METHOD_GET,
+    HTTP_GITHUB_HEADER,
+    HTTP_METHOD_GET,
     BASE_URL,
 } from "../../utils/constants";
-import { GithubReport } from "../../utils/types";
+import { GithubReport, GitHubRepository } from "../../utils/types";
 
 export async function fetchUserProfile(user: string) {
     try {
-        const response = await axios({
-            method: `${AXIOS_METHOD_GET}`,
-            url: `${BASE_URL}/${user}`,
-            headers: AXIOS_GITHUB_HEADER,
+        const response = await fetch(`${BASE_URL}/${user}`, {
+            method: `${HTTP_METHOD_GET}`,
+            headers: HTTP_GITHUB_HEADER,
         });
 
-        if (response.status === 200)
-            return {
-                username: user,
-                profile: response.data,
-            };
+        if (!response.ok)
+            throw new Error(`HTTP error! status: ${response.status}`);
 
+        const data = await response.json();
         return {
-            status: response.status,
-            data: response.data,
+            username: user,
+            profile: data,
         };
     } catch (error) {
         const message: string =
@@ -33,44 +29,43 @@ export async function fetchUserProfile(user: string) {
 
 export async function fetchUserRepos(user: string) {
     try {
-        const response = await axios({
-            method: `${AXIOS_METHOD_GET}`,
-            url: `${BASE_URL}/${user}/repos?per_page=100`,
-            headers: AXIOS_GITHUB_HEADER,
+        const response = await fetch(`${BASE_URL}/${user}/repos?per_page=100`, {
+            method: `${HTTP_METHOD_GET}`,
+            headers: HTTP_GITHUB_HEADER,
         });
+        if (!response.ok)
+            throw new Error(`HTTP error! status: ${response.status}`);
 
-        if (response.status === 200) {
-            const sortResponseByStars = response.data.sort(
-                (
-                    a: { stargazers_count: number },
-                    b: { stargazers_count: number },
-                ) => b.stargazers_count - a.stargazers_count,
-            );
+        const data = await response.json();
+        const filterForkedRepos = data.filter(
+            (repo: GitHubRepository) => repo.fork === false,
+        );
 
-            const topReposByStars = [];
-            for (
-                let index = 0;
-                index < Math.min(sortResponseByStars.length, 5);
-                index += 1
-            ) {
-                const current = sortResponseByStars[index];
+        const sortResponseByStars = filterForkedRepos.sort(
+            (
+                a: { stargazers_count: number },
+                b: { stargazers_count: number },
+            ) => b.stargazers_count - a.stargazers_count,
+        );
 
-                topReposByStars.push({
-                    name: current.name,
-                    stargazers_count: current.stargazers_count,
-                    html_url: current.html_url,
-                });
-            }
+        const topReposByStars = [];
+        for (
+            let index = 0;
+            index < Math.min(sortResponseByStars.length, 5);
+            index += 1
+        ) {
+            const current = sortResponseByStars[index];
 
-            return {
-                repoCount: response.data.length,
-                topReposByStars: topReposByStars,
-            };
+            topReposByStars.push({
+                name: current.name,
+                stargazers_count: current.stargazers_count,
+                html_url: current.html_url,
+            });
         }
 
         return {
-            status: response.status,
-            data: response.data,
+            repoCount: data.length,
+            topReposByStars: topReposByStars,
         };
     } catch (error) {
         const message: string =
