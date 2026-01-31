@@ -15,8 +15,6 @@ async function initiateCli(): Promise<GithubReport> {
     try {
         const response: GithubReport = await githubReport(username);
 
-        console.log("Final res", response);
-
         const folderPath: string | undefined = await fs.mkdir('data/', { recursive: true });
         const outputFilePath = path.join(folderPath!, `${username}.json`);
 
