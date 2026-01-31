@@ -1,6 +1,7 @@
 import { spawnSync } from "child_process";
 import { expect, test, vi, afterEach } from "vitest";
 import {
+    fetchJson,
     fetchUserProfile,
     fetchUserRepos,
     githubReport,
@@ -12,6 +13,7 @@ import {
     mockRawFetchUserReposResponse,
     mockFetchUserReposResponse,
     mockGithubReportResponse,
+    wrongUrl,
 } from "./mock-data";
 import {
     HTTP_GITHUB_HEADER,
@@ -24,6 +26,7 @@ afterEach(() => {
     vi.resetAllMocks(); // Resets both call history and implementation
     vi.unstubAllGlobals(); // remove global stubs like fetch
     vi.restoreAllMocks(); // Restores original implementation if mocked
+    vi.useRealTimers(); // Restore real timers
 });
 
 test("Validate input in cli", () => {
@@ -35,8 +38,21 @@ test("Validate input in cli", () => {
         },
     );
     expect(emptyUsernameResponse.status).toStrictEqual(1);
-    expect(emptyUsernameResponse.stdout).toContain(
-        "Username is required for fetching data",
+    expect(emptyUsernameResponse.stderr).toContain(
+        "usage: pnpm tsx src/week1/day3/cli.ts <username>",
+    );
+});
+
+test("Error in network request", async () => {
+    const mockedResponse = {
+        ok: false,
+        status: 404,
+    };
+    const mockedFetch = vi.fn().mockResolvedValue(mockedResponse);
+    vi.stubGlobal("fetch", mockedFetch);
+
+    await expect(fetchJson(wrongUrl)).rejects.toThrow(
+        `http ${mockedResponse.status}`,
     );
 });
 
@@ -78,6 +94,10 @@ test("Fetch user repository", async () => {
 });
 
 test("Github Report", async () => {
+    vi.useFakeTimers();
+    const fixedTime = new Date("2026-01-31T19:18:38.962Z");
+    vi.setSystemTime(fixedTime);
+
     vi.stubGlobal(
         "fetch",
         vi
@@ -96,10 +116,10 @@ test("Github Report", async () => {
             }),
     );
 
+    const githubReportResponse = await githubReport(mockUsername);
     const alterGeneratedAt = {
         ...mockGithubReportResponse,
-        generatedAt: new Date().toISOString(),
+        generatedAt: fixedTime.toISOString(),
     };
-    const githubReportResponse = await githubReport(mockUsername);
     expect(githubReportResponse).toEqual(alterGeneratedAt);
 });

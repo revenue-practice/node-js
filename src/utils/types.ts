@@ -1,9 +1,31 @@
 export type GithubReport = {
     generatedAt: string;
     username: string;
-    profile: object;
+    profile: GithubProfile;
     repoCount: number;
     topReposByStars: object;
+};
+
+export type GithubProfile = {
+    login: string;
+    id: number;
+    node_id: string;
+    avatar_url: string;
+    gravatar_id: string;
+    url: string;
+    html_url: string;
+    followers_url: string;
+    following_url: string;
+    gists_url: string;
+    starred_url: string;
+    subscriptions_url: string;
+    organizations_url: string;
+    repos_url: string;
+    events_url: string;
+    received_events_url: string;
+    type: "User" | "Organization";
+    user_view_type: "public" | "private";
+    site_admin: boolean;
 };
 
 export type GitHubRepository = {
@@ -13,27 +35,7 @@ export type GitHubRepository = {
     full_name: string;
     private: boolean;
 
-    owner: {
-        login: string;
-        id: number;
-        node_id: string;
-        avatar_url: string;
-        gravatar_id: string;
-        url: string;
-        html_url: string;
-        followers_url: string;
-        following_url: string;
-        gists_url: string;
-        starred_url: string;
-        subscriptions_url: string;
-        organizations_url: string;
-        repos_url: string;
-        events_url: string;
-        received_events_url: string;
-        type: "User" | "Organization";
-        user_view_type: "public" | "private";
-        site_admin: boolean;
-    };
+    owner: GithubProfile;
 
     html_url: string;
     description: string | null;

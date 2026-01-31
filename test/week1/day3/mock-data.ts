@@ -1,4 +1,5 @@
 export const mockUsername = "Ankit-Ransh";
+export const wrongUrl = "https://api.github.com/users/Ankit-Rak";
 
 export const mockRawUserProfileResponse = {
     status: 200,
@@ -3163,7 +3164,7 @@ export const mockRawFetchUserReposResponse = {
 };
 
 export const mockFetchUserReposResponse = {
-    repoCount: 20,
+    repoCount: 18,
     topReposByStars: [
         {
             name: "Annu-Project",
@@ -3312,7 +3313,7 @@ export const mockGithubReportResponse = {
         created_at: "2022-01-27T08:25:09Z",
         updated_at: "2026-01-31T14:13:05Z",
     },
-    repoCount: 20,
+    repoCount: 18,
     topReposByStars: [
         {
             name: "Annu-Project",
