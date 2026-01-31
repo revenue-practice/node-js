@@ -3,29 +3,31 @@ import * as fs from "fs";
 import { githubReport } from "./githubReport";
 import { GithubReport } from "../../utils/types";
 
-const username: unknown = process.argv[2];
-const outputFilePath = `data/${username}.json`;
+const username: string | undefined = process.argv[2];
 
 async function initiateCli(): Promise<GithubReport> {
     if (isEitherUndefinedOrNull(username)) {
+        process.exitCode = 1;
         throw new Error("Username is required for fetching data");
-    }
-
-    if (typeof username !== "string") {
-        throw new Error("Username must be a valid string");
     }
 
     try {
         const response: GithubReport = await githubReport(username);
 
+        console.log("Final res", response);
+
+        const outputFilePath = `data/${username}.json`;
         fs.appendFile(
             outputFilePath,
             JSON.stringify(response) + "\n",
             "utf8",
-            (err) => {
-                if (err) {
-                    console.log(err);
-                    return;
+            (error) => {
+                if (error) {
+                    const message: string =
+                        error instanceof Error
+                            ? error.message
+                            : JSON.stringify(error);
+                    throw new Error(message);
                 }
                 console.log(`Data written to ${outputFilePath} as JSON.`);
             },
@@ -39,4 +41,9 @@ async function initiateCli(): Promise<GithubReport> {
     }
 }
 
-initiateCli();
+initiateCli().catch((error: unknown) => {
+    const message: string =
+        error instanceof Error ? error.message : JSON.stringify(error);
+    console.log(message);
+    process.exitCode = 1;
+});
