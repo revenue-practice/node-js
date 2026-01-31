@@ -64,7 +64,7 @@ export async function fetchUserRepos(user: string) {
         }
 
         return {
-            repoCount: data.length,
+            repoCount: filterForkedRepos.length,
             topReposByStars: topReposByStars,
         };
     } catch (error) {
