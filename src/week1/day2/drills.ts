@@ -25,10 +25,10 @@ export function pickFields(
     obj: unknown,
     keys: string[],
 ): Record<string, unknown> {
-    if (!(typeof obj === 'object' && !Array.isArray(obj) && obj !== null))
+    if (!(typeof obj === "object" && !Array.isArray(obj) && obj !== null))
         throw new Error("expected object");
 
-    const record: Record<string, unknown> =  (obj as Record<string, unknown>);
+    const record: Record<string, unknown> = obj as Record<string, unknown>;
     const result: Record<string, unknown> = Object.create(null);
     for (const key of keys) {
         if (Object.hasOwn(obj, key)) result[key] = record[key];
