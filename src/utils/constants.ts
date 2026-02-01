@@ -4,6 +4,7 @@ dotenv.config();
 const TOKEN = process.env.GITHUB_TOKEN;
 
 export const BASE_URL = "https://api.github.com/users";
+export const SERVER_URL = "http://localhost:3000";
 export const HTTP_METHOD_GET = "get";
 export const HTTP_GITHUB_HEADER = {
     Accept: "application/vnd.github+json",

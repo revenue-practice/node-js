@@ -17,26 +17,31 @@ import { NotesDetails, NotesError, NotesResponse } from "./type";
 export const router = express.Router();
 
 router.use((req, res, next) => {
-    if (!JSON.parse(req.body)) res.status(400).json({ error: "invalid json" });
+    if (!JSON.parse(JSON.stringify(req.body)))
+        res.status(400).json({ error: "invalid json" });
     next();
 });
 
 router.post("/", (req, res) => {
     const { title: rawTitle, body: rawBody } = req.body;
     if (!isEmptyString(rawTitle))
-        res.status(400).json(
-            validationErrorMessage("title", "Title must be a valid string"),
-        );
+        return res
+            .status(400)
+            .json(
+                validationErrorMessage("title", "Title must be a valid string"),
+            );
     if (!isEmptyString(rawBody))
-        res.status(400).json(
-            validationErrorMessage("body", "Body must be a valid string"),
-        );
+        return res
+            .status(400)
+            .json(
+                validationErrorMessage("body", "Body must be a valid string"),
+            );
 
     const title = rawTitle.substring(0, 80);
     const body = rawTitle.substring(0, 2000);
 
     const response: NotesResponse = storeNotes(title, body);
-    return res.status(response.status).json(response.message);
+    return res.status(response.status).json(response);
 });
 
 router.get("/:id", (req, res) => {
@@ -116,6 +121,4 @@ router.delete("/:id", (req, res) => {
         .json(response);
 });
 
-module.exports = {
-    router,
-};
+export default router;

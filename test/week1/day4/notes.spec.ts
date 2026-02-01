@@ -16,13 +16,45 @@ import {
     fetchNotes,
     deleteNote,
 } from "../../../src/week1/day4/notesStore";
-
+import { createApp } from "../../../src/week1/day4/app";
 import { it, expect, vi, beforeEach, describe, afterEach } from "vitest";
 import {
     NotesDetails,
     NotesError,
     NotesResponse,
 } from "../../../src/week1/day4/type";
+import request from "supertest";
+
+describe("Post notes validation", () => {
+    const app = createApp();
+    it("Error for missing title", async () => {
+        const response = await request(app).post("/notes").send({
+            body: "Total abstinence from sexual feelings",
+        });
+
+        expect(response.status).toEqual(400);
+        expect(response.text).toEqual(
+            JSON.stringify({
+                error: "validation",
+                details: { title: "Title must be a valid string" },
+            }),
+        );
+    });
+
+    it("Error for missing body", async () => {
+        const response = await request(app).post("/notes").send({
+            title: "Physical Discipline",
+        });
+
+        expect(response.status).toEqual(400);
+        expect(response.text).toEqual(
+            JSON.stringify({
+                error: "validation",
+                details: { body: "Body must be a valid string" },
+            }),
+        );
+    });
+});
 
 describe("Post notes", () => {
     beforeEach(() => {
@@ -53,6 +85,37 @@ describe("Post notes", () => {
             status: 201,
             message: "Notes created successfully",
         });
+    });
+});
+
+describe("Update notes validation", () => {
+    const app = createApp();
+    it("Error for missing title", async () => {
+        const response = await request(app).put("/notes/123").send({
+            body: "Total abstinence from sexual feelings",
+        });
+
+        expect(response.status).toEqual(400);
+        expect(response.text).toEqual(
+            JSON.stringify({
+                error: "validation",
+                details: { title: "Title must be a valid string" },
+            }),
+        );
+    });
+
+    it("Error for missing body", async () => {
+        const response = await request(app).put("/notes/123").send({
+            title: "Physical Discipline",
+        });
+
+        expect(response.status).toEqual(400);
+        expect(response.text).toEqual(
+            JSON.stringify({
+                error: "validation",
+                details: { body: "Body must be a valid string" },
+            }),
+        );
     });
 });
 
@@ -151,13 +214,15 @@ describe("Delete notes", () => {
     });
 
     it("Should check for limit of notes with offset", () => {
-        const mockedResponse: NotesResponse | NotesError = deleteNote(mockNoteUpdated.id);
+        const mockedResponse: NotesResponse | NotesError = deleteNote(
+            mockNoteUpdated.id,
+        );
 
         const notes = __getNotesUnsafe();
         expect(notes).toEqual(mockNotesDeleted);
         expect(mockedResponse).toEqual({
             status: 201,
-            message: "Note deleted successfully"
+            message: "Note deleted successfully",
         });
     });
 });
