@@ -1,0 +1,10 @@
+curl --location 'https://api.github.com/users/Ankit-Ransh' \
+--header 'Accept: application/vnd.github+json' \
+--header 'X-GitHub-Api-Version: 2022-11-28' \
+--header 'Cookie: _octo=GH1.1.943459797.1769850234; logged_in=no; _octo=GH1.1.943459797.1769850234; logged_in=no'
+
+
+curl --location 'https://api.github.com/users/Ankit-Ransh/repos' \
+--header 'Accept: application/vnd.github+json' \
+--header 'X-GitHub-Api-Version: 2022-11-28' \
+--header 'Cookie: _octo=GH1.1.943459797.1769850234; logged_in=no'
