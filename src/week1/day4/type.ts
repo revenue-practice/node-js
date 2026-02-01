@@ -17,7 +17,7 @@ export type NotesError = {
 };
 
 export type NotesDetails = {
-    statu?: number;
+    status?: number;
     title: string;
     body: string;
 };

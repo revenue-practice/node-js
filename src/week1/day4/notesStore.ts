@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { Note, NotesDetails, NotesError, NotesResponse } from "./type";
 import { isEitherUndefinedOrNull } from "../../utils/helper";
 
-const notes: Note[] = [];
+let notes: Note[] = [];
 
 export const storeNotes = (title: string, body: string): NotesResponse => {
     const note: Note = {
@@ -27,7 +27,7 @@ export const updatedNotes = (
     id: string,
 ): NotesResponse | NotesError => {
     const fetchNote: Note[] = notes.filter((note: Note) => note.id === id);
-    if (fetchNote.length || isEitherUndefinedOrNull(fetchNote[0]))
+    if (!fetchNote.length || isEitherUndefinedOrNull(fetchNote[0]))
         return { status: 404, error: "No record found" };
 
     const fetchNoteIndex = notes.indexOf(fetchNote[0]);
@@ -48,15 +48,18 @@ export const updatedNotes = (
 
 export const fetchNotesById = (
     id: string,
-): NotesDetails[] | NotesResponse | NotesError => {
+): NotesDetails | NotesResponse | NotesError => {
     const fetchedNote: Note[] = notes.filter((note: Note) => note.id === id);
-    if (isEitherUndefinedOrNull(fetchedNote) || !Array.isArray(fetchedNote))
+    if (isEitherUndefinedOrNull(fetchedNote) || !fetchedNote.length)
         return { status: 400, error: "No record found" };
 
-    const response: NotesDetails[] = fetchedNote.filter(
-        (note: Note) => note.body || note.title,
-    );
-    return { status: 200, ...response };
+    const response: NotesDetails[] = fetchedNote.map((note: Note) => ({
+        status: 200,
+        title: note.title,
+        body: note.body,
+    }));
+
+    return response[0] as NotesDetails;
 };
 
 export const fetchNotes = (
@@ -70,12 +73,12 @@ export const fetchNotes = (
         (note: Note) => note.body || note.title,
     );
 
-    return response;
+    return { status: 200, ...response };
 };
 
 export const deleteNote = (id: string): NotesResponse | NotesError => {
     const fetchNote: Note[] = notes.filter((note: Note) => note.id === id);
-    if (fetchNote.length || isEitherUndefinedOrNull(fetchNote[0]))
+    if (!fetchNote.length || isEitherUndefinedOrNull(fetchNote[0]))
         return { status: 204, error: "No content" };
 
     const fetchNoteIndex = notes.indexOf(fetchNote[0]);
@@ -86,3 +89,9 @@ export const deleteNote = (id: string): NotesResponse | NotesError => {
         message: "Note deleted successfully",
     };
 };
+
+export const __seedNotes = (data: Note[]) => {
+    notes = data.map((n) => ({ ...n }));
+};
+
+export const __getNotesUnsafe = () => notes; // optional, test-only

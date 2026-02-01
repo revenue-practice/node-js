@@ -46,11 +46,10 @@ router.get("/:id", (req, res) => {
             validationErrorMessage("id", "Id must be a valid string"),
         );
 
-    const response: NotesDetails[] | NotesResponse | NotesError =
-        fetchNotesById(id as string);
-    return res
-        .status(Array.isArray(response) ? 200 : response.status)
-        .json(response);
+    const response: NotesDetails | NotesResponse | NotesError = fetchNotesById(
+        id as string,
+    );
+    return res.status(response.status!).json(response);
 });
 
 router.get("/", (req, res) => {
