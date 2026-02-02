@@ -2,123 +2,160 @@ import express from "express";
 import {
     isEitherUndefinedOrNull,
     isEmptyString,
-    isInteger,
     isNeitherUndefinedNorNull,
+    parseIntQuery,
     validationErrorMessage,
 } from "../../utils/helper";
 import {
     storeNotes,
     fetchNotesById,
     fetchNotes,
-    updatedNotes,
+    updateNotes,
     deleteNote,
 } from "./notesStore";
-import { NotesDetails, NotesError, NotesResponse } from "./type";
+import { NotesDetailedResponse, NotesResponse } from "./type";
 export const router = express.Router();
 
-router.use((req, res, next) => {
-    if (!JSON.parse(JSON.stringify(req.body)))
-        res.status(400).json({ error: "invalid json" });
-    next();
-});
-
 router.post("/", (req, res) => {
-    const { title: rawTitle, body: rawBody } = req.body;
-    if (!isEmptyString(rawTitle))
+    const { title, body } = req.body;
+    if (isEmptyString(title))
         return res
             .status(400)
             .json(
                 validationErrorMessage("title", "Title must be a valid string"),
             );
-    if (!isEmptyString(rawBody))
+    if (isEmptyString(body))
         return res
             .status(400)
             .json(
                 validationErrorMessage("body", "Body must be a valid string"),
             );
 
-    const title = rawTitle.substring(0, 80);
-    const body = rawTitle.substring(0, 2000);
+    if (title.length > 80)
+        return res
+            .status(400)
+            .json(
+                validationErrorMessage("title", "Title length should be <= 80"),
+            );
+    if (body.length > 2000)
+        return res
+            .status(400)
+            .json(
+                validationErrorMessage("body", "Body length should be <= 2000"),
+            );
 
     const response: NotesResponse = storeNotes(title, body);
-    return res.status(response.status).json(response);
+    return res.status(201).json(response);
 });
 
 router.get("/:id", (req, res) => {
     const id: unknown = req.params.id;
-    if (!isEmptyString(id))
-        res.status(400).json(
-            validationErrorMessage("id", "Id must be a valid string"),
-        );
+    if (isEmptyString(id))
+        return res
+            .status(400)
+            .json(validationErrorMessage("id", "Id must be a valid string"));
 
-    const response: NotesDetails | NotesResponse | NotesError = fetchNotesById(
-        id as string,
-    );
-    return res.status(response.status!).json(response);
+    const response: NotesResponse = fetchNotesById(id as string);
+    if (isEitherUndefinedOrNull(response))
+        return res.status(404).json({ error: "not found" });
+
+    return res.status(200).json(response);
 });
 
 router.get("/", (req, res) => {
     const { limit: rawLimit, offset: rawOffset } = req.query;
-    if (isNeitherUndefinedNorNull(rawLimit) && !isInteger(rawLimit))
-        res.status(400).json(
-            validationErrorMessage("limit", "Limit must be a valid integer"),
-        );
-    if (isNeitherUndefinedNorNull(rawOffset) && !isInteger(rawOffset))
-        res.status(400).json(
-            validationErrorMessage("offset", "Offset must be a valid integer"),
-        );
+    if (
+        isNeitherUndefinedNorNull(rawLimit) &&
+        !Number.isInteger(parseIntQuery(rawLimit))
+    )
+        return res
+            .status(404)
+            .json(
+                validationErrorMessage(
+                    "limit",
+                    "Limit must be a valid integer",
+                ),
+            );
+    if (
+        isNeitherUndefinedNorNull(rawOffset) &&
+        !Number.isInteger(parseIntQuery(rawOffset))
+    )
+        return res
+            .status(404)
+            .json(
+                validationErrorMessage(
+                    "offset",
+                    "Offset must be a valid integer",
+                ),
+            );
 
     const limit: number = isEitherUndefinedOrNull(rawLimit)
-        ? 100
-        : Number(rawLimit);
+        ? 20
+        : Math.min(Math.max(Number(rawLimit), 1), 50);
     const offset: number = isEitherUndefinedOrNull(rawOffset)
         ? 0
         : Number(rawOffset);
-    const response: NotesDetails[] | NotesError = fetchNotes(limit, offset);
+    const response: NotesDetailedResponse = fetchNotes(limit, offset);
 
-    return res
-        .status(Array.isArray(response) ? 200 : response.status)
-        .json(response);
+    if (isEitherUndefinedOrNull(response))
+        return res.status(404).json({ error: "not found" });
+
+    return res.status(200).json(response);
 });
 
 router.put("/:id", (req, res) => {
-    const { title: rawTitle, body: rawBody } = req.body;
+    const { title, body } = req.body;
     const id = req.params.id;
 
-    if (!isEmptyString(rawTitle))
-        res.status(400).json(
-            validationErrorMessage("title", "Title must be a valid string"),
-        );
-    if (!isEmptyString(rawBody))
-        res.status(400).json(
-            validationErrorMessage("body", "Body must be a valid string"),
-        );
-    if (!isEmptyString(id))
-        res.status(400).json(
-            validationErrorMessage("id", "Id must be a valid string"),
-        );
+    if (isEmptyString(title))
+        return res
+            .status(400)
+            .json(
+                validationErrorMessage("title", "Title must be a valid string"),
+            );
+    if (isEmptyString(body))
+        return res
+            .status(400)
+            .json(
+                validationErrorMessage("body", "Body must be a valid string"),
+            );
+    if (isEmptyString(id))
+        return res
+            .status(400)
+            .json(validationErrorMessage("id", "Id must be a valid string"));
 
-    const title = rawTitle.substring(0, 80);
-    const body = rawTitle.substring(0, 2000);
+    if (title.length > 80)
+        return res
+            .status(400)
+            .json(
+                validationErrorMessage("title", "Title length should be <= 80"),
+            );
+    if (body.length > 2000)
+        return res
+            .status(400)
+            .json(
+                validationErrorMessage("body", "Body length should be <= 2000"),
+            );
 
-    const response: NotesResponse | NotesError = updatedNotes(title, body, id);
-    return res
-        .status(Array.isArray(response) ? 200 : response.status)
-        .json(response);
+    const response: NotesResponse = updateNotes(title, body, id);
+    if (isEitherUndefinedOrNull(response))
+        return res.status(404).json({ error: "not found" });
+
+    return res.status(200).json(response);
 });
 
 router.delete("/:id", (req, res) => {
     const id = req.params.id;
 
-    if (!isEmptyString(id))
-        res.status(400).json(
-            validationErrorMessage("id", "Id must be a valid string"),
-        );
+    if (isEmptyString(id))
+        return res
+            .status(404)
+            .json(validationErrorMessage("id", "Id must be a valid string"));
 
-    const response: NotesResponse | NotesError = deleteNote(id);
-    return res
-        .status(Array.isArray(response) ? 200 : response.status)
-        .json(response);
+    const response: boolean = deleteNote(id);
+    if (!response) return res.status(404).json({ error: "not found" });
+
+    return res.status(204).send();
 });
 
 export default router;

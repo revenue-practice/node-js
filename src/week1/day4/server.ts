@@ -1,7 +1,8 @@
 import { createApp } from "./app";
+import { PORT } from "./config";
 
 const server = createApp();
 
-server.get("/health", (req, res) => {
-    res.status(200).json({ ok: true });
+server.listen(PORT, () => {
+    console.log(`Server is listening on PORT ${PORT}`);
 });
