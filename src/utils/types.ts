@@ -79,8 +79,8 @@ export type GitHubRepository = {
     releases_url: string;
     deployments_url: string;
 
-    created_at: string; // ISO 8601
-    updated_at: string; // ISO 8601
+    createdAt: string; // ISO 8601
+    updatedAt: string; // ISO 8601
     pushed_at: string; // ISO 8601
 
     git_url: string;
