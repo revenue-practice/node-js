@@ -1,13 +1,13 @@
 import {
     HTTP_GITHUB_HEADER,
     HTTP_METHOD_GET,
-    BASE_URL,
 } from "../../utils/constants";
 import {
     GithubProfile,
     GithubReport,
     GitHubRepository,
 } from "../../utils/types";
+import { BASE_URL } from "../day4/config";
 
 export async function fetchJson(url: string): Promise<unknown> {
     const response = await fetch(url, {

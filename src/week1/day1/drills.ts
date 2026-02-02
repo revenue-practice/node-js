@@ -71,7 +71,7 @@ export function titleCase(s: string): string {
         const word = words[index];
         if (isEitherUndefinedOrNull(word)) continue;
 
-        const lowerCaseWord: string = word.toLowerCase();
+        const lowerCaseWord: string = word!.toLowerCase();
         words[index] =
             lowerCaseWord.charAt(0).toUpperCase() + lowerCaseWord.slice(1);
     }

@@ -18,8 +18,8 @@ import {
 import {
     HTTP_GITHUB_HEADER,
     HTTP_METHOD_GET,
-    BASE_URL,
 } from "../../../src/utils/constants";
+import { BASE_URL } from "../../../src/week1/day4/config";
 
 afterEach(() => {
     vi.clearAllMocks(); // Clears call history
