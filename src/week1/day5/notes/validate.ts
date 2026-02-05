@@ -16,7 +16,7 @@ export const validateNoteId: RequestHandlerParams = (
             { message: NotesError.invalidIdType, field: NotesError.id },
         ]);
 
-    req.params.id = rawId;
+    req.noteId = rawId;
 
     next();
 };
@@ -41,14 +41,14 @@ export const validateNoteBody: RequestHandlerParams = (
             { message: NotesError.invalidBodyType, field: NotesError.body },
         ]);
 
-    const title: string = rawTitle,
-        body: string = rawBody;
-    if (!Helper.isValidString(title.trim(), 1, 80))
+    const title: string = rawTitle.trim(),
+        body: string = rawBody.trim();
+    if (!Helper.isValidString(title, 1, 80))
         throw new ValidationError([
             { message: NotesError.invalidTitleLength, field: NotesError.title },
         ]);
 
-    if (!Helper.isValidString(body.trim(), 1, 80))
+    if (!Helper.isValidString(body, 1, 2000))
         throw new ValidationError([
             { message: NotesError.invalidBodyLength, field: NotesError.body },
         ]);

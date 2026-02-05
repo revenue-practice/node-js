@@ -9,8 +9,8 @@ export function createApp() {
     const server = express();
 
     server.use(express.json());
-    server.use(loggingRouter);
     server.use(requestIdHandler);
+    server.use(loggingRouter);
 
     server.use(healthRouter);
     server.use(notesRouter);

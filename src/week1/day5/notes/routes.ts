@@ -32,7 +32,7 @@ router.get(
     NotesRoutes.getID(),
     validateNoteId,
     (req: Request, res: Response) => {
-        const id: string = req.params.id as unknown as string;
+        const id: string = req.noteId;
         const response: NoteResult = fetchNotesById(id);
 
         return res.status(200).json(response);
@@ -57,7 +57,7 @@ router.put(
     validateNoteBody,
     validateNote,
     (req: Request, res: Response) => {
-        const id: string = req.params.id as unknown as string,
+        const id: string = req.noteId,
             title: string = req.body.title,
             body = req.body.body;
 
@@ -70,7 +70,7 @@ router.delete(
     NotesRoutes.getID(),
     validateNoteId,
     (req: Request, res: Response) => {
-        const id: string = req.params.id as unknown as string;
+        const id: string = req.noteId;
 
         deleteNote(id);
         return res.status(204).send();

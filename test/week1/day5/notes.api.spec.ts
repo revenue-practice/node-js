@@ -23,6 +23,8 @@ describe("Post notes validation", () => {
             });
 
         expect(response.status).toEqual(201);
+        console.log(response);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).toMatchObject({
             title: "Physical Discipline",
             body: "Total abstinence from sexual feelings",
@@ -37,6 +39,7 @@ describe("Post notes validation", () => {
             });
 
         expect(response.statusCode).toEqual(400);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: NotesError.invalidTitleType, field: NotesError.title },
         ]);
@@ -51,6 +54,7 @@ describe("Post notes validation", () => {
             });
 
         expect(response.statusCode).toEqual(400);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: NotesError.invalidTitleLength, field: NotesError.title },
         ]);
@@ -64,6 +68,7 @@ describe("Post notes validation", () => {
             });
 
         expect(response.statusCode).toEqual(400);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: NotesError.invalidBodyType, field: NotesError.body },
         ]);
@@ -78,6 +83,7 @@ describe("Post notes validation", () => {
             });
 
         expect(response.statusCode).toEqual(400);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: NotesError.invalidBodyLength, field: NotesError.body },
         ]);
@@ -97,6 +103,7 @@ describe("Fetch notes via id validation", () => {
             .send({});
 
         expect(response.status).toEqual(200);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).toEqual({
             id: "note_1",
             title: "CI pipeline rules",
@@ -112,6 +119,7 @@ describe("Fetch notes via id validation", () => {
             .send({});
 
         expect(response.statusCode).toEqual(404);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: ErrorConstants.notFound },
         ]);
@@ -131,6 +139,7 @@ describe("Fetch notes validation", () => {
             .send({});
 
         expect(response.status).toEqual(200);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).toEqual({
             items: mockResultResponseAtFetch,
             total: 3,
@@ -145,6 +154,7 @@ describe("Fetch notes validation", () => {
             .send({});
 
         expect(response.status).toEqual(200);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).toEqual({
             items: [mockResultResponseAtFetch[1]],
             total: 3,
@@ -170,6 +180,7 @@ describe("Update notes validation", () => {
             });
 
         expect(response.status).toEqual(200);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).toMatchObject({
             id: "note_3",
             title: "Edge cases to test before release",
@@ -186,6 +197,7 @@ describe("Update notes validation", () => {
             });
 
         expect(response.statusCode).toEqual(404);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: ErrorConstants.notFound },
         ]);
@@ -199,6 +211,7 @@ describe("Update notes validation", () => {
             });
 
         expect(response.statusCode).toEqual(400);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: NotesError.invalidTitleType, field: NotesError.title },
         ]);
@@ -213,6 +226,7 @@ describe("Update notes validation", () => {
             });
 
         expect(response.statusCode).toEqual(400);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: NotesError.invalidTitleLength, field: NotesError.title },
         ]);
@@ -226,6 +240,7 @@ describe("Update notes validation", () => {
             });
 
         expect(response.statusCode).toEqual(400);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: NotesError.invalidBodyType, field: NotesError.body },
         ]);
@@ -240,6 +255,7 @@ describe("Update notes validation", () => {
             });
 
         expect(response.statusCode).toEqual(400);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: NotesError.invalidBodyLength, field: NotesError.body },
         ]);
@@ -259,6 +275,7 @@ describe("Delete notes validation", () => {
             .send({});
 
         expect(response.statusCode).toEqual(204);
+        expect(response.headers["x-request-id"]).toBeTruthy();
     });
 
     it("Failure validation", async () => {
@@ -267,6 +284,7 @@ describe("Delete notes validation", () => {
             .send({});
 
         expect(response.statusCode).toEqual(404);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal([
             { message: ErrorConstants.notFound },
         ]);

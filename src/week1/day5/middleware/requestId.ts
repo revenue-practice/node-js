@@ -6,8 +6,9 @@ export const requestIdHandler = (
     res: Response,
     next: NextFunction,
 ) => {
-    const requestId = randomUUID();
+    const requestId: string = randomUUID();
     req.requestId = requestId;
+    res.setHeader("x-request-id", requestId);
 
     next();
 };

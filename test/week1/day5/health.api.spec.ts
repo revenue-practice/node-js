@@ -11,6 +11,7 @@ describe("Health Check API", () => {
             .get(HealthRoutes.getHealthRoute())
             .send({});
         expect(response.status).toStrictEqual(200);
+        expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).deep.equal({ ok: true });
     });
 });
