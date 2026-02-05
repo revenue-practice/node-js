@@ -1,7 +1,4 @@
-import {
-    HTTP_GITHUB_HEADER,
-    HTTP_METHOD_GET,
-} from "../../utils/constants";
+import { HTTP_GITHUB_HEADER, HTTP_METHOD_GET } from "../../utils/constants";
 import {
     GithubProfile,
     GithubReport,
