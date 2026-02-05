@@ -23,7 +23,6 @@ describe("Post notes validation", () => {
             });
 
         expect(response.status).toEqual(201);
-        console.log(response);
         expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).toMatchObject({
             title: "Physical Discipline",
