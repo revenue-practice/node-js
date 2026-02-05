@@ -9,9 +9,13 @@ export const loggingRouter = (
 
     res.on("finish", () => {
         const responseTime = Date.now() - start;
-        const requestId = req.requestId;
-
-        console.log(`Request: ${requestId} with response time ${responseTime}`);
+        console.log(
+            req.method,
+            req.url,
+            res.statusCode,
+            responseTime.toFixed(3),
+            `rid = ${req.requestId}`,
+        );
     });
 
     next();
