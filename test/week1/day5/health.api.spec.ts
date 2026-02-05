@@ -12,6 +12,6 @@ describe("Health Check API", () => {
             .send({});
         expect(response.status).toStrictEqual(200);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal({ ok: true });
+        expect(response.body).toStrictEqual({ ok: true });
     });
 });

@@ -14,6 +14,19 @@ describe("Post notes validation", () => {
 
     const app = createApp();
 
+    it("Invalid JSON", async () => {
+        const response = await request(app)
+            .post(NotesRoutes.getDefaultRoute())
+            .set("Content-Type", "application/json")
+            .send(
+                '{"title": "Physical Discipline", "body": "Total abstinence"',
+            ); // missing closing }
+
+        expect(response.statusCode).toStrictEqual(400);
+        expect(response.header["x-request-id"]).toBeTruthy();
+        expect(response.body).toStrictEqual({ message: "Invalid Json" });
+    });
+
     it("Success validation", async () => {
         const response = await request(app)
             .post(NotesRoutes.getDefaultRoute())
@@ -22,7 +35,7 @@ describe("Post notes validation", () => {
                 body: "Total abstinence from sexual feelings",
             });
 
-        expect(response.status).toEqual(201);
+        expect(response.statusCode).toStrictEqual(201);
         expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).toMatchObject({
             title: "Physical Discipline",
@@ -37,9 +50,9 @@ describe("Post notes validation", () => {
                 body: "Total abstinence from sexual feelings",
             });
 
-        expect(response.statusCode).toEqual(400);
+        expect(response.statusCode).toStrictEqual(400);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: NotesError.invalidTitleType, field: NotesError.title },
         ]);
     });
@@ -52,9 +65,9 @@ describe("Post notes validation", () => {
                 body: "Total abstinence from sexual feelings",
             });
 
-        expect(response.statusCode).toEqual(400);
+        expect(response.statusCode).toStrictEqual(400);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: NotesError.invalidTitleLength, field: NotesError.title },
         ]);
     });
@@ -66,9 +79,9 @@ describe("Post notes validation", () => {
                 title: "Physical Discipline",
             });
 
-        expect(response.statusCode).toEqual(400);
+        expect(response.statusCode).toStrictEqual(400);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: NotesError.invalidBodyType, field: NotesError.body },
         ]);
     });
@@ -81,9 +94,9 @@ describe("Post notes validation", () => {
                 body: "Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for no Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note",
             });
 
-        expect(response.statusCode).toEqual(400);
+        expect(response.statusCode).toStrictEqual(400);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: NotesError.invalidBodyLength, field: NotesError.body },
         ]);
     });
@@ -101,9 +114,9 @@ describe("Fetch notes via id validation", () => {
             .get(`${NotesRoutes.getDefaultRoute()}/note_1`)
             .send({});
 
-        expect(response.status).toEqual(200);
+        expect(response.status).toStrictEqual(200);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).toEqual({
+        expect(response.body).toStrictEqual({
             id: "note_1",
             title: "CI pipeline rules",
             body: "All pull requests must pass lint, typecheck, tests, and build.",
@@ -117,9 +130,9 @@ describe("Fetch notes via id validation", () => {
             .get(`${NotesRoutes.getDefaultRoute()}/123`)
             .send({});
 
-        expect(response.statusCode).toEqual(404);
+        expect(response.statusCode).toStrictEqual(404);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: ErrorConstants.notFound },
         ]);
     });
@@ -137,9 +150,9 @@ describe("Fetch notes validation", () => {
             .get(`${NotesRoutes.getDefaultRoute()}`)
             .send({});
 
-        expect(response.status).toEqual(200);
+        expect(response.status).toStrictEqual(200);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).toEqual({
+        expect(response.body).toStrictEqual({
             items: mockResultResponseAtFetch,
             total: 3,
             limit: 20,
@@ -152,9 +165,9 @@ describe("Fetch notes validation", () => {
             .get(`${NotesRoutes.getDefaultRoute()}?limit=1&offset=1`)
             .send({});
 
-        expect(response.status).toEqual(200);
+        expect(response.status).toStrictEqual(200);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).toEqual({
+        expect(response.body).toStrictEqual({
             items: [mockResultResponseAtFetch[1]],
             total: 3,
             limit: 1,
@@ -178,7 +191,7 @@ describe("Update notes validation", () => {
                 body: "Test empty inputs, long text, invalid IDs, and unexpected payloads.",
             });
 
-        expect(response.status).toEqual(200);
+        expect(response.status).toStrictEqual(200);
         expect(response.headers["x-request-id"]).toBeTruthy();
         expect(response.body).toMatchObject({
             id: "note_3",
@@ -195,9 +208,9 @@ describe("Update notes validation", () => {
                 body: "Test empty inputs, long text, invalid IDs, and unexpected payloads.",
             });
 
-        expect(response.statusCode).toEqual(404);
+        expect(response.statusCode).toStrictEqual(404);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: ErrorConstants.notFound },
         ]);
     });
@@ -209,9 +222,9 @@ describe("Update notes validation", () => {
                 body: "Total abstinence from sexual feelings",
             });
 
-        expect(response.statusCode).toEqual(400);
+        expect(response.statusCode).toStrictEqual(400);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: NotesError.invalidTitleType, field: NotesError.title },
         ]);
     });
@@ -224,9 +237,9 @@ describe("Update notes validation", () => {
                 body: "Total abstinence from sexual feelings",
             });
 
-        expect(response.statusCode).toEqual(400);
+        expect(response.statusCode).toStrictEqual(400);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: NotesError.invalidTitleLength, field: NotesError.title },
         ]);
     });
@@ -238,9 +251,9 @@ describe("Update notes validation", () => {
                 title: "Physical Discipline",
             });
 
-        expect(response.statusCode).toEqual(400);
+        expect(response.statusCode).toStrictEqual(400);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: NotesError.invalidBodyType, field: NotesError.body },
         ]);
     });
@@ -253,9 +266,9 @@ describe("Update notes validation", () => {
                 body: "Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for no Body for note 25 Body for note 25 Body for note 25 Body for note 25 Body for note",
             });
 
-        expect(response.statusCode).toEqual(400);
+        expect(response.statusCode).toStrictEqual(400);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: NotesError.invalidBodyLength, field: NotesError.body },
         ]);
     });
@@ -273,7 +286,7 @@ describe("Delete notes validation", () => {
             .delete(`${NotesRoutes.getDefaultRoute()}/note_1`)
             .send({});
 
-        expect(response.statusCode).toEqual(204);
+        expect(response.statusCode).toStrictEqual(204);
         expect(response.headers["x-request-id"]).toBeTruthy();
     });
 
@@ -282,9 +295,9 @@ describe("Delete notes validation", () => {
             .delete(`${NotesRoutes.getDefaultRoute()}/123`)
             .send({});
 
-        expect(response.statusCode).toEqual(404);
+        expect(response.statusCode).toStrictEqual(404);
         expect(response.headers["x-request-id"]).toBeTruthy();
-        expect(response.body).deep.equal([
+        expect(response.body).toStrictEqual([
             { message: ErrorConstants.notFound },
         ]);
     });

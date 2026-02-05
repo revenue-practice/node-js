@@ -8,8 +8,8 @@ import { loggingRouter } from "./middleware/logger";
 export function createApp() {
     const server = express();
 
-    server.use(express.json());
     server.use(requestIdHandler);
+    server.use(express.json());
     server.use(loggingRouter);
 
     server.use(healthRouter);

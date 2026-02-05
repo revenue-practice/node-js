@@ -79,7 +79,7 @@ describe("Fetch notes", () => {
     it("returns notes with limit and offset", () => {
         const response = fetchNotes(1, 1);
 
-        expect(response).toEqual({
+        expect(response).toStrictEqual({
             items: [mockNotes[1]],
             total: mockNotes.length,
             limit: 1,

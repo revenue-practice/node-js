@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { CustomErrorStructure } from "./types";
 import { ErrorConstants } from "./errors.constants";
+import { NotesError } from "../notes/errors";
+import { Helper } from "../utils/helper";
 
 abstract class CustomError extends Error {
     constructor() {
@@ -68,6 +70,16 @@ export const errorHandler = (
     res: Response,
     _next: NextFunction,
 ) => {
+    if (
+        error instanceof SyntaxError &&
+        !Helper.isNull(error) &&
+        NotesError.body in error
+    ) {
+        return res.status(400).json({
+            message: ErrorConstants.invalidJson,
+        });
+    }
+
     if (error instanceof CustomError) {
         return res.status(error.statusCode).json(error.formatErrors());
     }

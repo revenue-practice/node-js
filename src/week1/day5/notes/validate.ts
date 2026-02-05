@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { RequestHandlerParams } from "../utils/types";
 import { Helper } from "../utils/helper";
-import { InvalidJson, ValidationError } from "../middleware/errors";
+import { ValidationError } from "../middleware/errors";
 import { NotesError } from "./errors";
 import { NoteRequest } from "./types";
 
@@ -26,9 +26,6 @@ export const validateNoteBody: RequestHandlerParams = (
     res: Response,
     next: NextFunction,
 ) => {
-    const b: unknown = req.body;
-    if (!Helper.isObject(b)) throw new InvalidJson();
-
     const rawTitle: unknown = req.body.title,
         rawBody = req.body.body;
 
